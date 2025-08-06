@@ -252,8 +252,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 // ),
                 child: AutoSizeText(
                   _output,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: dynamicTextColor,
                     fontSize: 72.0, // This is the max font size
                     fontWeight: FontWeight.w300,
                   ),
@@ -465,7 +465,7 @@ class CalculatorButton extends StatelessWidget {
         ? backgroundColor!.withOpacity(1)
         : (isDarkMode
               ? Colors.white.withOpacity(0.2)
-              : Colors.black.withOpacity(1));
+              : Colors.grey.withOpacity(1));
     return Container(
       margin: const EdgeInsets.all(4.0),
       height: 70.0,
