@@ -6,10 +6,10 @@ The app provides a clean, intuitive user interface and performs standard arithme
 
 <br>
 
-<p align="center">
+<!-- <p align="center">
   <!-- Replace this with an actual image URL of your app's UI on GitHub -->
   <img src="https://via.placeholder.com/400x800?text=Calculator+App+Screenshot" alt="Simple Calculator App UI" width="300"/>
-</p>
+</p> -->
 
 ---
 
@@ -113,7 +113,7 @@ To create a release-ready APK file:
 
 <p align="center">
   <img src="https://media.licdn.com/dms/image/v2/D5622AQElmG3sfCktoQ/feedshare-shrink_1280/B56Zh9tfvNHcAk-/0/1754455736651?e=1757548800&v=beta&t=3-_wE5RexFoV0RndZ9-5PLw-_sTWLC-wsESthgCx1eI" alt="Calculator App Dark Theme" width="150" style="margin-right: 10px;"/>
-  <img src="https://media.licdn.com/dms/image/v2/D5622AQEQvg3cPmZBNw/feedshare-shrink_1280/B56Zh9tfvTHcAo-/0/1754455736964?e=1757548800&v=beta&t=EPOCIurWmgEVDo2rMNfD_aFn3DI2ziQXbmFjr1MtaBc" alt="Calculator App Light Theme" width="150" style="margin-right: 10px;"/>
+  <img src="https://media.licdn.com/dms/image/v2/D5622AQEQvg3cPmZBNw/feedshare-shrink_1280/B56Zh9tfvTHcAo-/0/1754455736964?e=1757548800&v=beta&t=EPOCIurWmgEVDo2rMNfD_aFn3DI2ziQXbmFjr1MtaBc" alt="Calculator App Light Theme" width="150" style="margin-right: 30px;"/>
 </p>
 
 ---
