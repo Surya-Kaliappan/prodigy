@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 void main() {
   runApp(const CalculatorApp());
@@ -12,7 +13,7 @@ class CalculatorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Simple Calculator',
+      title: 'Calculator',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -48,104 +49,159 @@ class CalculatorScreen extends StatefulWidget {
 }
 
 class _CalculatorScreenState extends State<CalculatorScreen> {
+  // --- State Variables ---
   String _inputExpression = "";
   String _output = "0";
-  bool _useDot = true;
 
-  void _onButtonPressed(String buttonText) {
-    setState(() {
-      if (buttonText == "C") {
-        _inputExpression = "";
-        _output = "0";
-        _useDot = true;
-      } else if (buttonText == "⌫") {
-        if (_inputExpression.isNotEmpty) {
-          _useDot = _inputExpression[_inputExpression.length - 1] == '.'
-              ? true
-              : _useDot;
-          _inputExpression = _inputExpression.substring(
-            0,
-            _inputExpression.length - 1,
-          );
-          if (_inputExpression.isEmpty) {
-            _output = "0";
-          } else {
-            _output = _inputExpression;
-          }
-        }
-      } else if (buttonText == "=") {
-        if (_inputExpression.isNotEmpty &&
-            !_isOperator(_inputExpression[_inputExpression.length - 1])) {
-          try {
-            String finalExpression = _inputExpression.replaceAll('x', '*');
-            finalExpression = finalExpression.replaceAll('÷', '/');
-            GrammarParser p = GrammarParser();
-            Expression exp = p.parse(finalExpression);
-            ContextModel cm = ContextModel();
-            double evalResult = exp.evaluate(EvaluationType.REAL, cm);
-
-            String formattedResult;
-            if (evalResult == evalResult.toInt().toDouble()) {
-              formattedResult = evalResult.toInt().toString();
-            } else {
-              formattedResult = evalResult.toStringAsFixed(8);
-              formattedResult = formattedResult.replaceAll(
-                RegExp(r'\.?0+$'),
-                '',
-              );
-              _useDot = true;
-            }
-
-            _output = formattedResult;
-            _inputExpression = formattedResult;
-          } catch (e) {
-            _output = "Error";
-            _inputExpression = "";
-          }
-        }
-      } else if (buttonText == ".") {
-        if (_output == "Error" ||
-            (_inputExpression.isEmpty && _output != "0")) {
-          _inputExpression = "0.";
-          _output = _inputExpression;
-          _useDot = false;
-          return;
-        }
-        if (_useDot) {
-          _inputExpression = _inputExpression + buttonText;
-          _useDot = false;
-        }
-        _output = _inputExpression;
-      } else {
-        if (_isOperator(buttonText) &&
-            _inputExpression.isNotEmpty &&
-            _isOperator(_inputExpression[_inputExpression.length - 1])) {
-          _inputExpression = _inputExpression.substring(
-            0,
-            _inputExpression.length - 1,
-          );
-        }
-
-        _useDot = _isOperator(buttonText) ? true : _useDot;
-
-        if (_output == "0" && !_isOperator(buttonText) && buttonText != '.') {
-          _inputExpression = buttonText;
-        } else {
-          _inputExpression += buttonText;
-        }
-
-        _output = _inputExpression;
-      }
-    });
+  // --- Helper to clear all state ---
+  void _clearAll() {
+    _inputExpression = "";
+    _output = "0";
   }
 
+  // --- Helper to check if a character is an operator (without '=') ---
   bool _isOperator(String char) {
     return char == '+' ||
         char == '-' ||
         char == 'x' ||
         char == '÷' ||
-        char == '%' ||
-        char == '=';
+        char == '%';
+  }
+
+  // --- Helper to handle number and decimal point input ---
+  void _handleNumberInput(String buttonText) {
+    // If output is '0' or 'Error', or if the last input was an operator, start a new number
+    if (_output == "0" || _output == "Error") {
+      _inputExpression = buttonText;
+    } else {
+      _inputExpression += buttonText;
+    }
+  }
+
+  void _handleLastDot() {
+    if ((_inputExpression.lastIndexOf(RegExp(r'\.')) ==
+        _inputExpression.length - 1)) {
+      _inputExpression = "${_inputExpression}0";
+      _output = _inputExpression;
+    }
+  }
+
+  // --- Main button press handler ---
+  void _onButtonPressed(String buttonText) {
+    setState(() {
+      switch (buttonText) {
+        case "C":
+          _clearAll();
+          break;
+
+        case "⌫":
+          if (_inputExpression.isNotEmpty) {
+            _inputExpression = _inputExpression.substring(
+              0,
+              _inputExpression.length - 1,
+            );
+            if (_inputExpression.isEmpty) {
+              _output = "0";
+            }
+          }
+          break;
+
+        case "=":
+          if (_inputExpression.isNotEmpty &&
+              !_isOperator(_inputExpression[_inputExpression.length - 1])) {
+            _handleLastDot();
+            try {
+              String finalExpression = _inputExpression.replaceAll('x', '*');
+              finalExpression = finalExpression.replaceAll('÷', '/');
+              finalExpression = finalExpression.replaceAll('%', '/100');
+
+              GrammarParser p = GrammarParser();
+              Expression exp = p.parse(finalExpression);
+              ContextModel cm = ContextModel();
+              double evalResult = exp.evaluate(EvaluationType.REAL, cm);
+
+              String formattedResult;
+              if (evalResult == evalResult.toInt().toDouble()) {
+                formattedResult = evalResult.toInt().toString();
+              } else {
+                formattedResult = evalResult.toStringAsFixed(8);
+                formattedResult = formattedResult.replaceAll(
+                  RegExp(r'\.?0+$'),
+                  '',
+                );
+              }
+              _output = formattedResult;
+              _inputExpression = formattedResult;
+            } catch (e) {
+              _output = "Error";
+              _inputExpression = "";
+            }
+          }
+          break;
+
+        case ".":
+          // Check if a decimal already exists in the current number segment
+          bool hasDecimal = false;
+          int lastOperatorIndex = _inputExpression.lastIndexOf(
+            RegExp(r'[\+\-\x\÷\%]'),
+          );
+          if (lastOperatorIndex != -1) {
+            String currentNumber = _inputExpression.substring(
+              lastOperatorIndex + 1,
+            );
+            if (currentNumber.contains('.')) {
+              hasDecimal = true;
+            }
+          } else if (_inputExpression.contains('.')) {
+            hasDecimal = true;
+          }
+
+          if (!hasDecimal) {
+            if (_inputExpression.isEmpty ||
+                _isOperator(_inputExpression[_inputExpression.length - 1])) {
+              _inputExpression += "0.";
+            } else {
+              _inputExpression += ".";
+            }
+          }
+          break;
+
+        case '+':
+        case '-':
+        case 'x':
+        case '÷':
+        case '%':
+          // Handle the starting symbole of number
+          if (_inputExpression.isEmpty &&
+              (buttonText == '%' || buttonText == 'x' || buttonText == '÷')) {
+            break;
+          } else {
+            _handleNumberInput(buttonText);
+          }
+
+          _handleLastDot();
+
+          // Operator replacement logic
+          if (_inputExpression.isNotEmpty &&
+              _isOperator(_inputExpression[_inputExpression.length - 1])) {
+            _inputExpression = _inputExpression.substring(
+              0,
+              _inputExpression.length - 1,
+            );
+          }
+
+          _inputExpression += buttonText;
+          break;
+
+        default: // For all number buttons (0-9)
+          _handleNumberInput(buttonText);
+      }
+
+      // A single place to update the output for non-error states
+      if (_output != "Error") {
+        _output = _inputExpression.isEmpty ? "0" : _inputExpression;
+      }
+    });
   }
 
   @override
@@ -179,15 +235,34 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               child: Container(
                 padding: const EdgeInsets.all(16.0),
                 alignment: Alignment.bottomRight,
-                child: Text(
+                // child: SingleChildScrollView(
+                //   scrollDirection:
+                //       Axis.horizontal, // Enables horizontal scrolling
+                //   reverse:
+                //       true, // Scrolls from right to left (like a calculator)
+                //   child: FittedBox(
+                //     fit: BoxFit.fitWidth, // Scales the text to fit the width
+                //     child: Text(
+                //       _output,
+                //       style: const TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 72.0, // This is the initial font size
+                //         fontWeight: FontWeight.w300,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                child: AutoSizeText(
                   _output,
-                  style: TextStyle(
-                    color: dynamicTextColor,
-                    fontSize: 72.0,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 72.0, // This is the max font size
                     fontWeight: FontWeight.w300,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  maxLines: 5, // Only allow up to 2 lines
+                  minFontSize: 24.0, // The smallest the font can get
+                  textAlign:
+                      TextAlign.end, // Align text to the end (right side)
                 ),
               ),
             ),
@@ -340,7 +415,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   child: CalculatorButton(
                     text: '.',
                     backgroundColor: Colors.grey.shade900,
-                    onPressed: _useDot ? () => _onButtonPressed('.') : () {},
+                    // onPressed: _useDot ? () => _onButtonPressed('.') : () {},
+                    onPressed: () => _onButtonPressed('.'),
                   ),
                 ),
                 Expanded(
@@ -387,6 +463,11 @@ class CalculatorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final Color shadowColorToUse = backgroundColor != Colors.grey.shade900
+        ? backgroundColor!.withOpacity(1)
+        : (isDarkMode
+              ? Colors.white.withOpacity(0.2)
+              : Colors.black.withOpacity(1));
     return Container(
       margin: const EdgeInsets.all(4.0),
       height: 70.0,
@@ -398,13 +479,14 @@ class CalculatorButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(10.0),
           ),
-          elevation: 5.0,
-          shadowColor: isDarkMode
-              ? Colors.white.withOpacity(0.5)
-              : Colors.black.withOpacity(1),
+          elevation: 10.0,
+          // shadowColor: isDarkMode
+          //     ? Colors.white.withOpacity(0.5)
+          //     : Colors.black.withOpacity(1),
           // surfaceTintColor: isDarkMode
           //     ? Colors.white.withOpacity(0.1)
           //     : Colors.transparent,
+          shadowColor: shadowColorToUse,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10.0),
