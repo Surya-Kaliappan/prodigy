@@ -179,8 +179,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             _handleNumberInput(buttonText);
           }
 
-          _handleLastDot();
-
           // Operator replacement logic
           if (_inputExpression.isNotEmpty &&
               _isOperator(_inputExpression[_inputExpression.length - 1])) {
@@ -189,7 +187,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               _inputExpression.length - 1,
             );
           }
-
+          _handleLastDot();
           _inputExpression += buttonText;
           break;
 
