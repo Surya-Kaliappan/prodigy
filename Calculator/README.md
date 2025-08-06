@@ -1,6 +1,6 @@
 # Simple Calculator App
 
-This is a modern, cross-platform calculator application built with Flutter. It was developed as the first task during my Android Developer Internship at @Prodilogy.
+This is a modern, cross-platform calculator application built with Flutter. It was developed as the first task during my Android Developer Internship at @prodigy.
 
 The app provides a clean, intuitive user interface and performs standard arithmetic operations with a focus on a professional, responsive user experience.
 
@@ -34,10 +34,6 @@ The app provides a clean, intuitive user interface and performs standard arithme
 
 * **Framework:** [Flutter](https://flutter.dev/) (UI Toolkit)
 * **Language:** [Dart](https://dart.dev/) (Programming Language)
-* **State Management:** `StatefulWidget` with `setState()` for managing UI updates.
-* **Expression Evaluation:** [`math_expressions`](https://pub.dev/packages/math_expressions) package for parsing and evaluating mathematical strings.
-* **Dynamic Text Sizing:** [`auto_size_text`](https://pub.dev/packages/auto_size_text) package for intelligent font scaling.
-* **App Icon Generation:** [`flutter_launcher_icons`](https://pub.dev/packages/flutter_launcher_icons) package for automating icon generation.
 * **Development Environment:** Visual Studio Code with official Flutter and Dart extensions.
 
 ---
@@ -59,12 +55,12 @@ Before you begin, ensure you have the Flutter SDK installed and configured.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/Surya-Kaliappan/prodilogy.git](https://github.com/Surya-Kaliappan/prodilogy.git)
+    git clone [https://github.com/Surya-Kaliappan/prodigy.git](https://github.com/Surya-Kaliappan/prodigy.git)
     ```
 
 2.  **Navigate to the project directory:**
     ```bash
-    cd prodilogy
+    cd prodigy
     ```
 
 3.  **Install dependencies:**
@@ -126,6 +122,6 @@ This project was developed as a learning exercise during my internship. Feedback
 
 ## 🧑 Author
 
-* SURYA - Android Developer Intern at @Prodilogy
+* SURYA - Android Developer Intern at @prodigy
 
 ---
