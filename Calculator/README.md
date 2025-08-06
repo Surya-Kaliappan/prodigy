@@ -6,11 +6,6 @@ The app provides a clean, intuitive user interface and performs standard arithme
 
 <br>
 
-<!-- <p align="center">
-  <!-- Replace this with an actual image URL of your app's UI on GitHub -->
-  <img src="https://via.placeholder.com/400x800?text=Calculator+App+Screenshot" alt="Simple Calculator App UI" width="300"/>
-</p> -->
-
 ---
 
 ## ✨ Features
