@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
+
+import 'models/task.dart';
+import 'services/task_storage.dart';
+import 'widgets/task_item.dart';
 
 // -----------------------------------------------------------------------------
 // Global Instances & Main App Entry Point
 // -----------------------------------------------------------------------------
 
-/// A global instance of the audio player, initialized once for the application.
 final AudioPlayer audioPlayer = AudioPlayer();
-
-/// A global instance of Uuid for generating unique task IDs.
 final Uuid _uuid = const Uuid();
+final TaskStorage _taskStorage = TaskStorage();
 
-/// The main entry point for the Flutter application.
 void main() {
   runApp(const TodoApp());
 }
@@ -24,7 +23,6 @@ void main() {
 // App Widget and Theme Configuration
 // -----------------------------------------------------------------------------
 
-/// The root widget of the application, setting up the app's title and themes.
 class TodoApp extends StatelessWidget {
   const TodoApp({super.key});
 
@@ -60,67 +58,9 @@ class TodoApp extends StatelessWidget {
 }
 
 // -----------------------------------------------------------------------------
-// Data Model for a single Task
-// -----------------------------------------------------------------------------
-
-/// Represents a single To-Do task with a unique ID, title, and completion status.
-class Task {
-  final String id;
-  String title;
-  bool isCompleted;
-
-  Task({required this.id, required this.title, this.isCompleted = false});
-
-  /// Factory constructor to create a Task object from a JSON map.
-  factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
-      id: json['id'],
-      title: json['title'],
-      isCompleted: json['isCompleted'],
-    );
-  }
-
-  /// Method to convert a Task object to a JSON map for storage.
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'title': title, 'isCompleted': isCompleted};
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Data Storage Service using shared_preferences
-// -----------------------------------------------------------------------------
-
-/// A service class to handle saving and loading tasks from local storage.
-class TaskStorage {
-  static const _key = 'tasks';
-
-  /// Saves a list of tasks to shared_preferences by encoding them to JSON strings.
-  Future<void> saveTasks(List<Task> tasks) async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> jsonList = tasks
-        .map((task) => jsonEncode(task.toJson()))
-        .toList();
-    await prefs.setStringList(_key, jsonList);
-  }
-
-  /// Loads a list of tasks from shared_preferences by decoding JSON strings.
-  Future<List<Task>> loadTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? jsonList = prefs.getStringList(_key);
-    if (jsonList == null) {
-      return [];
-    }
-    return jsonList
-        .map((jsonString) => Task.fromJson(jsonDecode(jsonString)))
-        .toList();
-  }
-}
-
-// -----------------------------------------------------------------------------
 // Main To-Do List Screen
 // -----------------------------------------------------------------------------
 
-/// The main screen of the application, responsible for displaying and managing tasks.
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
 
@@ -129,7 +69,6 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  final TaskStorage _taskStorage = TaskStorage();
   List<Task> _tasks = [];
   final TextEditingController _taskController = TextEditingController();
 
@@ -139,24 +78,22 @@ class _TodoListScreenState extends State<TodoListScreen> {
     _loadTasks();
   }
 
-  /// Loads tasks from local storage and updates the state.
   Future<void> _loadTasks() async {
     _tasks = await _taskStorage.loadTasks();
     setState(() {});
   }
 
-  /// Adds a new task to the list and saves it to local storage.
   Future<void> _addTask(String title) async {
-    if (title.isNotEmpty) {
-      final newTask = Task(id: _uuid.v4(), title: title);
+    if (title.trim().isNotEmpty) {
+      final newTask = Task(id: _uuid.v4(), title: title.trim());
       setState(() {
         _tasks.add(newTask);
       });
       await _taskStorage.saveTasks(_tasks);
+      _taskController.clear();
     }
   }
 
-  /// Toggles the completion status of a task and saves the list.
   Future<void> _toggleTaskCompletion(String taskId) async {
     setState(() {
       final task = _tasks.firstWhere((t) => t.id == taskId);
@@ -165,7 +102,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
     await _taskStorage.saveTasks(_tasks);
   }
 
-  /// Deletes a task from the list and saves the changes.
   Future<void> _deleteTask(String taskId) async {
     setState(() {
       _tasks.removeWhere((t) => t.id == taskId);
@@ -173,7 +109,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
     await _taskStorage.saveTasks(_tasks);
   }
 
-  /// Shows a dialog for editing a task's title.
   void _showEditTaskDialog(Task task) {
     _taskController.text = task.title;
     showDialog(
@@ -213,10 +148,55 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 
+  Widget _buildTaskSummary(BuildContext context) {
+    final int totalTasks = _tasks.length;
+    final int completedTasks = _tasks.where((task) => task.isCompleted).length;
+    final Color onBackgroundColor = Theme.of(context).colorScheme.onBackground;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Your Progress',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: onBackgroundColor,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Assigned: $totalTasks',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: onBackgroundColor.withOpacity(0.7),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  'Completed: $completedTasks',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: onBackgroundColor.withOpacity(0.7),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color onBackgroundColor = Theme.of(context).colorScheme.onBackground;
-    // final Color onSurfaceColor = Theme.of(context).colorScheme.onSurface;
 
     return Scaffold(
       appBar: AppBar(
@@ -227,23 +207,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.delete_sweep, color: onBackgroundColor),
-            onPressed: () {
-              // Delete all completed tasks (will implement later)
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.filter_list, color: onBackgroundColor),
-            onPressed: () {
-              // Filter tasks (will implement later)
-            },
-          ),
-        ],
       ),
       body: Column(
+        // <--- Main Column for the body
         children: <Widget>[
+          _buildTaskSummary(context), // <--- The new task summary
           Expanded(
             child: _tasks.isEmpty
                 ? Center(
@@ -256,6 +224,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     itemCount: _tasks.length,
                     itemBuilder: (context, index) {
                       final task = _tasks[index];
+                      // ... (Dismissible widget and TaskItem are here)
                       return Dismissible(
                         key: Key(task.id),
                         direction: DismissDirection.endToStart,
@@ -306,77 +275,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ],
       ),
       floatingActionButton: null,
-    );
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Custom Task Item Widget
-// -----------------------------------------------------------------------------
-
-/// A custom widget to display a single Task item with a checkbox, title, and edit/delete buttons.
-class TaskItem extends StatelessWidget {
-  final Task task;
-  final Function(bool?) onToggle;
-  final VoidCallback onDelete;
-  final VoidCallback onEdit;
-
-  const TaskItem({
-    super.key,
-    required this.task,
-    required this.onToggle,
-    required this.onDelete,
-    required this.onEdit,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final Color onBackgroundColor = Theme.of(context).colorScheme.onBackground;
-    final Color onSurfaceColor = Theme.of(context).colorScheme.onSurface;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.05),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          children: <Widget>[
-            Checkbox(value: task.isCompleted, onChanged: onToggle),
-            const SizedBox(width: 12.0),
-            Expanded(
-              child: Text(
-                task.title,
-                style: TextStyle(
-                  color: onBackgroundColor,
-                  fontSize: 16.0,
-                  decoration: task.isCompleted
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                ),
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.edit, color: onSurfaceColor.withOpacity(0.6)),
-              onPressed: onEdit,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete, color: onSurfaceColor.withOpacity(0.6)),
-              onPressed: onDelete,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
