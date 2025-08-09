@@ -3,6 +3,7 @@ import '../models/task.dart';
 import '../widgets/task_item.dart';
 import '../services/task_storage.dart';
 import '../widgets/add_task_bottom_sheet.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class SearchScreen extends StatefulWidget {
   final List<Task> tasks;
@@ -135,17 +136,37 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _filteredTasks.length,
-                  itemBuilder: (context, index) {
-                    final task = _filteredTasks[index];
-                    return TaskItem(
-                      task: task,
-                      onToggle: (value) => _toggleTaskCompletion(task.id),
-                      onEdit: () => _showEditTaskBottomSheet(task),
-                      onDelete: () => _deleteTask(task.id),
-                    );
-                  },
+                child: SlidableAutoCloseBehavior(
+                  child: ListView.builder(
+                    itemCount: _filteredTasks.length,
+                    itemBuilder: (context, index) {
+                      final task = _filteredTasks[index];
+                      return Slidable(
+                        key: Key(task.id),
+                        // This section is now updated to match your design
+                        endActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          extentRatio: 0.2,
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) => _deleteTask(task.id),
+                              backgroundColor:
+                                  const Color.fromARGB(0, 254, 73, 73),
+                              foregroundColor: const Color(0xFFFE4A49),
+                              icon: Icons.delete,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ],
+                        ),
+                        child: TaskItem(
+                          task: task,
+                          onToggle: (value) => _toggleTaskCompletion(task.id),
+                          onEdit: () => _showEditTaskBottomSheet(task),
+                          onDelete: () => _deleteTask(task.id),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

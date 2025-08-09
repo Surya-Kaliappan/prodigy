@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
 import '../services/task_storage.dart';
-import '../widgets/add_task_dialog.dart';
-import 'search_screen.dart';
+import '../widgets/add_task_bottom_sheet.dart';
 import '../widgets/task_item.dart';
 import 'package:uuid/uuid.dart';
+import 'search_screen.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TaskStorage _taskStorage = TaskStorage();
   List<Task> _tasks = [];
-  final TextEditingController _taskController = TextEditingController();
   final Uuid _uuid = const Uuid();
   bool _isCompletedExpanded = true;
 
@@ -56,57 +56,32 @@ class _HomeScreenState extends State<HomeScreen> {
     await _taskStorage.saveTasks(_tasks);
   }
 
-  void _showEditTaskDialog(Task task) {
-    _taskController.text = task.title;
-    showDialog(
+  void _showEditTaskBottomSheet(Task task) {
+    showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Edit Task"),
-          content: TextField(
-            controller: _taskController,
-            autofocus: true,
-            decoration: const InputDecoration(hintText: "Edit task here"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                _taskController.clear();
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Save"),
-              onPressed: () {
-                if (_taskController.text.isNotEmpty) {
-                  setState(() {
-                    task.title = _taskController.text.trim();
-                  });
-                  _taskStorage.saveTasks(_tasks);
-                  _taskController.clear();
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
+      isScrollControlled: true,
+      builder: (context) {
+        return AddTaskBottomSheet(
+          isEditMode: true,
+          initialTitle: task.title,
+          onAddTask: (String newTitle) {},
+          onSave: (String newTitle) {
+            setState(() {
+              task.title = newTitle;
+            });
+            _taskStorage.saveTasks(_tasks);
+          },
         );
       },
     );
   }
 
-  void _showAddTaskDialog() {
-    _taskController.clear();
-    showDialog(
+  void _showAddTaskBottomSheet() {
+    showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return AddTaskDialog(
-          taskController: _taskController,
-          onAddTask: (String title) {
-            _addTask(title);
-            Navigator.of(context).pop();
-          },
-        );
+      isScrollControlled: true,
+      builder: (context) {
+        return AddTaskBottomSheet(onAddTask: _addTask);
       },
     );
   }
@@ -168,77 +143,116 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView(
-                children: [
-                  Text(
-                    'To Be Completed',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: onBackgroundColor.withOpacity(0.5),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ...uncompletedTasks.map((task) {
-                    return TaskItem(
-                      task: task,
-                      onToggle: (value) => _toggleTaskCompletion(task.id),
-                      onEdit: () => _showEditTaskDialog(task),
-                      onDelete: () => _deleteTask(task.id),
-                    );
-                  }).toList(),
-                  const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isCompletedExpanded = !_isCompletedExpanded;
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Completed',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: onBackgroundColor.withOpacity(0.5),
-                          ),
-                        ),
-                        Icon(
-                            _isCompletedExpanded
-                                ? Icons.arrow_drop_up
-                                : Icons.arrow_drop_down,
-                            color: onBackgroundColor),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.fastOutSlowIn,
-                    child: SizedBox(
-                      height: _isCompletedExpanded ? null : 0,
-                      child: Column(
-                        children: completedTasks.map((task) {
-                          return TaskItem(
-                            task: task,
-                            onToggle: (value) => _toggleTaskCompletion(task.id),
-                            onEdit: () => _showEditTaskDialog(task),
-                            onDelete: () => _deleteTask(task.id),
-                          );
-                        }).toList(),
+              child: SlidableAutoCloseBehavior(
+                child: ListView(
+                  children: [
+                    Text(
+                      'To Be Completed',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: onBackgroundColor.withOpacity(0.5),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    ...uncompletedTasks.map((task) {
+                      return Slidable(
+                        key: Key(task.id),
+                        endActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          extentRatio: 0.2,
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) => _deleteTask(task.id),
+                              backgroundColor:
+                                  const Color.fromARGB(0, 254, 73, 73),
+                              foregroundColor: const Color(0xFFFE4A49),
+                              icon: Icons.delete,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ],
+                        ),
+                        child: TaskItem(
+                          task: task,
+                          onToggle: (value) => _toggleTaskCompletion(task.id),
+                          onEdit: () => _showEditTaskBottomSheet(task),
+                          onDelete: () => _deleteTask(task.id),
+                        ),
+                      );
+                    }).toList(),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isCompletedExpanded = !_isCompletedExpanded;
+                        });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Completed',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: onBackgroundColor.withOpacity(0.5),
+                            ),
+                          ),
+                          Icon(
+                              _isCompletedExpanded
+                                  ? Icons.arrow_drop_up
+                                  : Icons.arrow_drop_down,
+                              color: onBackgroundColor),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.fastOutSlowIn,
+                      child: SizedBox(
+                        height: _isCompletedExpanded ? null : 0,
+                        child: Column(
+                          children: completedTasks.map((task) {
+                            return Slidable(
+                              key: Key(task.id),
+                              // This section is now updated to match the one above
+                              endActionPane: ActionPane(
+                                motion: const StretchMotion(),
+                                extentRatio: 0.2,
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) =>
+                                        _deleteTask(task.id),
+                                    backgroundColor:
+                                        const Color.fromARGB(0, 254, 73, 73),
+                                    foregroundColor: const Color(0xFFFE4A49),
+                                    icon: Icons.delete,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ],
+                              ),
+                              child: TaskItem(
+                                task: task,
+                                onToggle: (value) =>
+                                    _toggleTaskCompletion(task.id),
+                                onEdit: () => _showEditTaskBottomSheet(task),
+                                onDelete: () => _deleteTask(task.id),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTaskDialog,
+        onPressed: _showAddTaskBottomSheet,
         child: const Icon(Icons.add),
       ),
     );
