@@ -29,11 +29,11 @@ The application is packed with features designed for a seamless and productive u
 
 | Light Mode                                      | Dark Mode                                     |
 | :----------------------------------------------: | :---------------------------------------------: |
-| ![Light Mode](./screenshots/white_mode.jpg)      | ![Dark Mode](./screenshots/dark_mode.jpg)       |
+| <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/white_mode.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/dark_mode.jpg" alt="Dark Mode" width="300"/> |
 
 | Swipe Action                                       | Multi-Select Mode                                      |
 | :------------------------------------------------: | :----------------------------------------------------: |
-| ![Swipe Action](./screenshots/swipe_delete.jpg)    | ![Multi-Select Mode](./screenshots/multiple_delete.jpg)   |
+| <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/swipe_delete.jpg" alt="Swipe Action" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/multiple_delete.jpg" alt="Multi-Select Mode" width="300"/> |
 
 ---
 
@@ -52,17 +52,21 @@ This project leverages the power of Flutter and several key packages to deliver 
 The project is organized into a clean and scalable structure to ensure maintainability:
 
 lib/
+
 ├── main.dart             # App entry point and theme configuration
 
 ├── models/
+
 │   └── task.dart         # The data model for a single task
 
 ├── screens/
+
 │   ├── home_screen.dart    # Main screen displaying task lists
 
 │   └── search_screen.dart  # Dedicated screen for searching tasks
 
 ├── services/
+
 │   └── task_storage.dart # Handles saving/loading tasks from storage
 
 └── widgets/
@@ -74,7 +78,7 @@ lib/
 
 ---
 
-## 챌린지 겪었던 것들 (Challenges Faced) & Future Updates
+## (Challenges Faced) & Future Updates
 
 One of the most significant challenges during this project was the implementation of a fully reliable, real-time notification system for task reminders. This feature requires deep integration with the native Android operating system, including managing background services, handling aggressive battery optimization on different devices, and ensuring permissions are correctly handled.
 
