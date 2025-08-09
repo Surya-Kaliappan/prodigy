@@ -28,7 +28,7 @@ The application is packed with features designed for a seamless and productive u
 *(It is highly recommended to add your own screenshots here to visually showcase the app. Here are some suggestions for what to include.)*
 
 | Light Mode                                      | Dark Mode                                     | Search Action                                     |
-| :----------------------------------------------: | :---------------------------------------------: |
+| :----------------------------------------------: | :---------------------------------------------: | :---------------------------------------------: |
 | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/white_mode.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/dark_mode.jpg" alt="Dark Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/todo/assets/screenshots/search_screen.jpg" alt="Dark Mode" width="300"/> |
 
 | Swipe Action                                       | Multi-Select Mode                                      |
