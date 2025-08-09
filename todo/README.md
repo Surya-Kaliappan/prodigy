@@ -27,13 +27,13 @@ The application is packed with features designed for a seamless and productive u
 
 *(It is highly recommended to add your own screenshots here to visually showcase the app. Here are some suggestions for what to include.)*
 
-| Light Mode | Dark Mode |
-| :--------: | :-------: |
-| *(Main screen in light mode)* | *(Main screen in dark mode)* |
+| Light Mode                                      | Dark Mode                                     |
+| :----------------------------------------------: | :---------------------------------------------: |
+| ![Light Mode](./screenshots/white_mode.jpg)      | ![Dark Mode](./screenshots/dark_mode.jpg)       |
 
-| Swipe Action | Multi-Select Mode |
-| :----------: | :---------------: |
-| *(A task swiped to show the delete button)* | *(The app in multi-select mode with a few tasks highlighted)* |
+| Swipe Action                                       | Multi-Select Mode                                      |
+| :------------------------------------------------: | :----------------------------------------------------: |
+| ![Swipe Action](./screenshots/swipe_delete.jpg)    | ![Multi-Select Mode](./screenshots/multiple_delete.jpg)   |
 
 ---
 
@@ -41,16 +41,9 @@ The application is packed with features designed for a seamless and productive u
 
 This project leverages the power of Flutter and several key packages to deliver a robust experience:
 
--   **Core**: Flutter & Dart
--   **State Management**: `StatefulWidget` and `setState` for managing the app's state in a clear and understandable way.
--   **UI & Gestures**:
-    -   `flutter_slidable`: For implementing the intuitive swipe-to-delete action.
--   **Data Persistence**:
-    -   `shared_preferences`: For saving the task list locally on the device.
--   **Unique ID Generation**:
-    -   `uuid`: To create a unique identifier for each task, which is crucial for reliable updates and deletions.
--   **App Icon Generation**:
-    -   `flutter_launcher_icons`: A development tool used to generate all necessary app icon sizes from a single source image.
+* **Framework:** [Flutter](https://flutter.dev/) (UI Toolkit)
+* **Language:** [Dart](https://dart.dev/) (Programming Language)
+* **Development Environment:** Visual Studio Code with official Flutter and Dart extensions.
 
 ---
 
@@ -60,15 +53,22 @@ The project is organized into a clean and scalable structure to ensure maintaina
 
 lib/
 ├── main.dart             # App entry point and theme configuration
+
 ├── models/
 │   └── task.dart         # The data model for a single task
+
 ├── screens/
 │   ├── home_screen.dart    # Main screen displaying task lists
+
 │   └── search_screen.dart  # Dedicated screen for searching tasks
+
 ├── services/
 │   └── task_storage.dart # Handles saving/loading tasks from storage
+
 └── widgets/
+
 ├── add_task_bottom_sheet.dart # UI for adding/editing tasks
+
 └── task_item.dart      # Custom widget for displaying a single task
 
 
