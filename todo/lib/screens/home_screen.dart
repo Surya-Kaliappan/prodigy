@@ -182,20 +182,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   AppBar _buildDefaultAppBar() {
-    final Color onBackgroundColor = Theme.of(context).colorScheme.onBackground;
+    // final Color onBackgroundColor = Theme.of(context).colorScheme.onBackground;
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      actions: [
-        IconButton(
-          icon: Icon(Icons.filter_list, color: onBackgroundColor),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(Icons.settings, color: onBackgroundColor),
-          onPressed: () {},
-        ),
-      ],
+      toolbarHeight: 20,
+      // actions: [
+      //   IconButton(
+      //     icon: Icon(Icons.filter_list, color: onBackgroundColor),
+      //     onPressed: () {},
+      //   ),
+      //   IconButton(
+      //     icon: Icon(Icons.settings, color: onBackgroundColor),
+      //     onPressed: () {},
+      //   ),
+      // ],
     );
   }
 
@@ -271,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Tasks',
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: 38,
                     fontWeight: FontWeight.bold,
                     color: onBackgroundColor,
                   ),

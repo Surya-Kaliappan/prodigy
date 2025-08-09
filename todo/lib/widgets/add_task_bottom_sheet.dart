@@ -110,26 +110,26 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // Placeholder for reminder functionality
-                  },
-                  icon: Icon(Icons.alarm,
-                      color: Theme.of(context).colorScheme.primary, size: 18.0),
-                  label: Text('Add Reminder',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 13.0)),
-                  style: ElevatedButton.styleFrom(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                    backgroundColor: textFieldFillColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
+                // ElevatedButton.icon(
+                //   onPressed: () {
+                //     // Placeholder for reminder functionality
+                //   },
+                //   icon: Icon(Icons.alarm,
+                //       color: Theme.of(context).colorScheme.primary, size: 18.0),
+                //   label: Text('Add Reminder',
+                //       style: TextStyle(
+                //           color: Theme.of(context).colorScheme.primary,
+                //           fontSize: 13.0)),
+                //   style: ElevatedButton.styleFrom(
+                //     padding:
+                //         const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                //     backgroundColor: textFieldFillColor,
+                //     shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(50.0),
+                //     ),
+                //     elevation: 0,
+                //   ),
+                // ),
                 TextButton(
                   onPressed: () {
                     if (_controller.text.isNotEmpty) {
