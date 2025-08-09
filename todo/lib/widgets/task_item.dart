@@ -1,3 +1,4 @@
+// lib/widgets/task_item.dart
 import 'package:flutter/material.dart';
 import '../models/task.dart';
 
@@ -6,6 +7,7 @@ class TaskItem extends StatelessWidget {
   final Function(bool?) onToggle;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final bool isSelected; // New property for selection state
 
   const TaskItem({
     super.key,
@@ -13,18 +15,24 @@ class TaskItem extends StatelessWidget {
     required this.onToggle,
     required this.onEdit,
     required this.onDelete,
+    this.isSelected = false, // Default to not selected
   });
 
   @override
   Widget build(BuildContext context) {
     final Color onBackgroundColor = Theme.of(context).colorScheme.onBackground;
 
+    // Determine the background color based on selection state
+    final Color itemBackgroundColor = isSelected
+        ? Theme.of(context).colorScheme.primary.withOpacity(0.3)
+        : Theme.of(context).colorScheme.surface;
+
     return GestureDetector(
       onTap: onEdit,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 6.0),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: itemBackgroundColor, // Use the dynamic background color
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
@@ -39,9 +47,10 @@ class TaskItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
           child: Row(
             children: <Widget>[
+              // In selection mode, tapping the checkbox should do nothing
               Checkbox(
                 value: task.isCompleted,
-                onChanged: onToggle,
+                onChanged: isSelected ? null : onToggle,
                 shape: const CircleBorder(),
               ),
               const SizedBox(width: 5.0),
