@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
 import '../services/task_storage.dart';
-import '../widgets/add_task_bottom_sheet.dart';
+import '../widgets/add_task_dialog.dart';
+import 'search_screen.dart';
 import '../widgets/task_item.dart';
 import 'package:uuid/uuid.dart';
-import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TaskStorage _taskStorage = TaskStorage();
   List<Task> _tasks = [];
+  final TextEditingController _taskController = TextEditingController();
   final Uuid _uuid = const Uuid();
   bool _isCompletedExpanded = true;
 
@@ -55,32 +56,57 @@ class _HomeScreenState extends State<HomeScreen> {
     await _taskStorage.saveTasks(_tasks);
   }
 
-  void _showEditTaskBottomSheet(Task task) {
-    showModalBottomSheet(
+  void _showEditTaskDialog(Task task) {
+    _taskController.text = task.title;
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AddTaskBottomSheet(
-          isEditMode: true,
-          initialTitle: task.title,
-          onAddTask: (String newTitle) {},
-          onSave: (String newTitle) {
-            setState(() {
-              task.title = newTitle;
-            });
-            _taskStorage.saveTasks(_tasks);
-          },
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Edit Task"),
+          content: TextField(
+            controller: _taskController,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: "Edit task here"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                _taskController.clear();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Save"),
+              onPressed: () {
+                if (_taskController.text.isNotEmpty) {
+                  setState(() {
+                    task.title = _taskController.text.trim();
+                  });
+                  _taskStorage.saveTasks(_tasks);
+                  _taskController.clear();
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
         );
       },
     );
   }
 
-  void _showAddTaskBottomSheet() {
-    showModalBottomSheet(
+  void _showAddTaskDialog() {
+    _taskController.clear();
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return AddTaskBottomSheet(onAddTask: _addTask);
+      builder: (BuildContext context) {
+        return AddTaskDialog(
+          taskController: _taskController,
+          onAddTask: (String title) {
+            _addTask(title);
+            Navigator.of(context).pop();
+          },
+        );
       },
     );
   }
@@ -124,9 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: onBackgroundColor,
                   ),
                 ),
-                // The Hero widget for the search icon
                 Hero(
-                  tag: 'search-hero', // This must be unique
+                  tag: 'search-hero',
                   child: IconButton(
                     icon:
                         Icon(Icons.search, size: 30, color: onBackgroundColor),
@@ -155,24 +180,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 10),
                   ...uncompletedTasks.map((task) {
-                    return Dismissible(
-                      key: Key(task.id),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
-                        _deleteTask(task.id);
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                      child: TaskItem(
-                        task: task,
-                        onToggle: (value) => _toggleTaskCompletion(task.id),
-                        onEdit: () => _showEditTaskBottomSheet(task),
-                        onDelete: () => _deleteTask(task.id),
-                      ),
+                    return TaskItem(
+                      task: task,
+                      onToggle: (value) => _toggleTaskCompletion(task.id),
+                      onEdit: () => _showEditTaskDialog(task),
+                      onDelete: () => _deleteTask(task.id),
                     );
                   }).toList(),
                   const SizedBox(height: 20),
@@ -209,26 +221,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: _isCompletedExpanded ? null : 0,
                       child: Column(
                         children: completedTasks.map((task) {
-                          return Dismissible(
-                            key: Key(task.id),
-                            direction: DismissDirection.endToStart,
-                            onDismissed: (direction) {
-                              _deleteTask(task.id);
-                            },
-                            background: Container(
-                              color: Colors.red,
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20.0),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.white),
-                            ),
-                            child: TaskItem(
-                              task: task,
-                              onToggle: (value) =>
-                                  _toggleTaskCompletion(task.id),
-                              onEdit: () => _showEditTaskBottomSheet(task),
-                              onDelete: () => _deleteTask(task.id),
-                            ),
+                          return TaskItem(
+                            task: task,
+                            onToggle: (value) => _toggleTaskCompletion(task.id),
+                            onEdit: () => _showEditTaskDialog(task),
+                            onDelete: () => _deleteTask(task.id),
                           );
                         }).toList(),
                       ),
@@ -241,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddTaskBottomSheet,
+        onPressed: _showAddTaskDialog,
         child: const Icon(Icons.add),
       ),
     );

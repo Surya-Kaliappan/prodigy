@@ -72,7 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
         return AddTaskBottomSheet(
           isEditMode: true,
           initialTitle: task.title,
-          onAddTask: (String newTitle) {}, // Not used in edit mode
+          onAddTask: (String newTitle) {},
           onSave: (String newTitle) {
             setState(() {
               task.title = newTitle;
