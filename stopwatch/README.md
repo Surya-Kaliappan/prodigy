@@ -43,22 +43,23 @@ Here are some showcases of the application in both light and dark modes, display
 - **Development Environment:** Visual Studio Code with official Flutter and Dart extensions.
 
 ---
-## 📂 File Structure
+📂 File Structure
+<details>
+<summary>Click to expand</summary>
 
-The project is organized into a clean and modular structure for better maintainability.
-
-stopwatch_app/\n
-├── lib/\n
-│   ├── main.dart             # Main entry point, theme definitions, and provider setup.\n
-│   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.\n
-│   ├── settings_page.dart    # The UI for the user settings screen.\n
-│   ├── settings_provider.dart# Manages the state and persistence of user settings.\n
-│   └── widgets.dart          # Contains all custom painters and smaller reusable widgets.\n
-│\n
-├── assets/\n
-│   └── icon.png              # The source image for the app icon.\n
-│\n
-└── pubspec.yaml              # Project dependencies and configuration.\n
+stopwatch_app/
+├── lib/
+│   ├── main.dart             # Main entry point, theme definitions, and provider setup.
+│   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.
+│   ├── settings_page.dart    # The UI for the user settings screen.
+│   ├── settings_provider.dart# Manages the state and persistence of user settings.
+│   └── widgets.dart          # Contains all custom painters and smaller reusable widgets.
+│
+├── assets/
+│   └── icon.png              # The source image for the app icon.
+│
+└── pubspec.yaml              # Project dependencies and configuration.
+</details>
 
 
 ---
