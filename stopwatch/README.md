@@ -43,9 +43,9 @@ Here are some showcases of the application in both light and dark modes, display
 - **Development Environment:** Visual Studio Code with official Flutter and Dart extensions.
 
 ---
-📂 File Structure
-<details>
-<summary>Click to expand</summary>
+## 📂 File Structure
+
+The project is organized into a clean and modular structure for better maintainability.
 
 stopwatch_app/
 ├── lib/
@@ -59,7 +59,6 @@ stopwatch_app/
 │   └── icon.png              # The source image for the app icon.
 │
 └── pubspec.yaml              # Project dependencies and configuration.
-</details>
 
 
 ---
