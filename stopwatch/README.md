@@ -6,11 +6,11 @@ This project is a modern, highly animated, and fully-featured stopwatch applicat
 
 Here are some showcases of the application in both light and dark modes, displaying various features.
 
-| Light Mode (Running) | Dark Mode (Running) | Settings (Dark) |
+| Light Mode | Dark Mode | Settings |
 | :---: | :---: | :---: |
-| ![Light Mode Screenshot 1](link_to_your_image_1.png) | ![Dark Mode Screenshot 1](link_to_your_image_2.png) | ![Settings Screenshot 1](link_to_your_image_3.png) |
-| **Light Mode (Paused)** | **Dark Mode (Paused with Laps)** | **Settings (Light)** |
-| ![Light Mode Screenshot 2](link_to_your_image_4.png) | ![Dark Mode Screenshot 2](link_to_your_image_5.png) | ![Settings Screenshot 2](link_to_your_image_6.png) |
+| ![Light Mode Screenshot](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/white_mode.jpg) | ![Dark Mode Screenshot](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/dark_mode.jpg) | ![Settings Screenshot](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/settings.jpg) |
+| **Starting Timer** | **Laps and Background Changing** | **Stopping Timer** |
+| ![Starting Timer](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/start_watch.jpg) | ![Laps and Background](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/laps.jpg) | ![Stopping Timer](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/stop_watch.jpg) |
 
 
 ---
