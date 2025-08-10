@@ -8,9 +8,9 @@ Here are some showcases of the application in both light and dark modes, display
 
 | Light Mode | Dark Mode | Settings |
 | :---: | :---: | :---: |
-| ![Light Mode Screenshot](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/white_mode.jpg) | ![Dark Mode Screenshot](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/dark_mode.jpg) | ![Settings Screenshot](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/settings.jpg) |
+| <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/stopwatch/assets/screenshots/white_mode.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/stopwatch/assets/screenshots/dark_mode.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/stopwatch/assets/screenshots/settings.jpg" alt="Light Mode" width="300"/> |
 | **Starting Timer** | **Laps and Background Changing** | **Stopping Timer** |
-| ![Starting Timer](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/start_watch.jpg) | ![Laps and Background](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/laps.jpg) | ![Stopping Timer](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch/assets/screenshots/stop_watch.jpg) |
+| <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/stopwatch/assets/screenshots/start_watch.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/stopwatch/assets/screenshots/laps.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/stopwatch/assets/screenshots/stop_watch.jpg" alt="Light Mode" width="300"/> |
 
 
 ---
@@ -47,18 +47,18 @@ Here are some showcases of the application in both light and dark modes, display
 
 The project is organized into a clean and modular structure for better maintainability.
 
-stopwatch_app/
-├── lib/
-│   ├── main.dart             # Main entry point, theme definitions, and provider setup.
-│   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.
-│   ├── settings_page.dart    # The UI for the user settings screen.
-│   ├── settings_provider.dart# Manages the state and persistence of user settings.
-│   └── widgets.dart          # Contains all custom painters and smaller reusable widgets.
-│
-├── assets/
-│   └── icon.png              # The source image for the app icon.
-│
-└── pubspec.yaml              # Project dependencies and configuration.
+stopwatch_app/\n
+├── lib/\n
+│   ├── main.dart             # Main entry point, theme definitions, and provider setup.\n
+│   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.\n
+│   ├── settings_page.dart    # The UI for the user settings screen.\n
+│   ├── settings_provider.dart# Manages the state and persistence of user settings.\n
+│   └── widgets.dart          # Contains all custom painters and smaller reusable widgets.\n
+│\n
+├── assets/\n
+│   └── icon.png              # The source image for the app icon.\n
+│\n
+└── pubspec.yaml              # Project dependencies and configuration.\n
 
 
 ---
