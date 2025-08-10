@@ -52,17 +52,17 @@ This project leverages the power of Flutter and several key packages to deliver 
 The project is organized into a clean and scalable structure to ensure maintainability:
 
 lib/  
-├── main.dart             # App entry point and theme configuration  
+├── main.dart                   # App entry point and theme configuration  
 ├── models/  
-│   └── task.dart         # The data model for a single task  
+│       └── task.dart           # The data model for a single task  
 ├── screens/  
-│   ├── home_screen.dart    # Main screen displaying task lists  
-│   └── search_screen.dart  # Dedicated screen for searching tasks  
+│       ├── home_screen.dart    # Main screen displaying task lists  
+│       └── search_screen.dart  # Dedicated screen for searching tasks  
 ├── services/  
-│   └── task_storage.dart # Handles saving/loading tasks from storage  
+│       └── task_storage.dart   # Handles saving/loading tasks from storage  
 └── widgets/  
-├── add_task_bottom_sheet.dart # UI for adding/editing tasks  
-└── task_item.dart      # Custom widget for displaying a single task  
+├── add_task_bottom_sheet.dart  # UI for adding/editing tasks  
+└── task_item.dart              # Custom widget for displaying a single task  
 
 ---
 
