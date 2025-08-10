@@ -48,8 +48,8 @@ Here are some showcases of the application in both light and dark modes, display
 The project is organized into a clean and modular structure for better maintainability.
 
 stopwatch_app/
-├── lib/
-│   ├── main.dart             # Main entry point, theme definitions, and provider setup.
+``` ├── lib/ ```
+``` │   ├── main.dart             # Main entry point, theme definitions, and provider setup. ```
 │   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.
 │   ├── settings_page.dart    # The UI for the user settings screen.
 │   ├── settings_provider.dart# Manages the state and persistence of user settings.
