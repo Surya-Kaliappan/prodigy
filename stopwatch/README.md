@@ -43,23 +43,31 @@ Here are some showcases of the application in both light and dark modes, display
 - **Development Environment:** Visual Studio Code with official Flutter and Dart extensions.
 
 ---
-📂 File Structure
-<details>
-<summary>Click to expand</summary>
+## 📂 File Structure
 
-stopwatch_app/
-├── lib/
-│   ├── main.dart             # Main entry point, theme definitions, and provider setup.
-│   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.
-│   ├── settings_page.dart    # The UI for the user settings screen.
-│   ├── settings_provider.dart# Manages the state and persistence of user settings.
-│   └── widgets.dart          # Contains all custom painters and smaller reusable widgets.
-│
-├── assets/
-│   └── icon.png              # The source image for the app icon.
-│
-└── pubspec.yaml              # Project dependencies and configuration.
-</details>
+The project is organized into a clean and modular structure for better maintainability.
+
+Of course. My apologies for the misunderstanding. Here is the exact raw text you need to copy and paste into your README.md file to create the file structure section with a fixed, pre-formatted look.
+
+Using triple backticks ``` will ensure it renders as a code block and not a paragraph.
+
+Markdown
+
+---
+## 📂 File Structure
+
+stopwatch_app/  
+├── lib/  
+│   ├── main.dart             # Main entry point, theme definitions, and provider setup.  
+│   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.  
+│   ├── settings_page.dart    # The UI for the user settings screen.  
+│   ├── settings_provider.dart# Manages the state and persistence of user settings.  
+│   └── widgets.dart          # Contains all custom painters and smaller reusable widgets.  
+│  
+├── assets/  
+│   └── icon.png              # The source image for the app icon.  
+│  
+└── pubspec.yaml              # Project dependencies and configuration.  
 
 
 ---
