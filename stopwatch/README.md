@@ -1,6 +1,6 @@
 # Stopwatch Application - A Flutter Project
 
-This project is a modern, highly animated, and fully-featured stopwatch application built with Flutter. It's designed to be a visually engaging and user-centric tool for timekeeping, featuring a dynamic UI that is both beautiful and functional. The application supports both light and dark modes and includes a comprehensive settings panel for user customization.
+This is a modern, highly animated, and cross-platform stopwatch application built with Flutter. It was developed as the third task (Task 3) during my Developer Internship at **Prodigy InfoTech**. The app provides a dynamic, user interface and performs standard stopwatch functions, including lap and split timing, with a focus on a professional and visually engaging user experience.
 
 ## 📸 Screenshots
 
@@ -47,18 +47,13 @@ Here are some showcases of the application in both light and dark modes, display
 
 The project is organized into a clean and modular structure for better maintainability.
 
-Of course. My apologies for the misunderstanding. Here is the exact raw text you need to copy and paste into your README.md file to create the file structure section with a fixed, pre-formatted look.
-
-Using triple backticks ``` will ensure it renders as a code block and not a paragraph.
-
-Markdown
-
 ---
 ## 📂 File Structure
 
+=======
 stopwatch_app/  
 ├── lib/  
-│   ├── main.dart             # Main entry point, theme definitions, and provider setup.  
+│   ├── main.dart             # Main entry point, theme definitions, and provider setup. 
 │   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.  
 │   ├── settings_page.dart    # The UI for the user settings screen.  
 │   ├── settings_provider.dart# Manages the state and persistence of user settings.  
