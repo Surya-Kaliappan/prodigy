@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'settings_provider.dart';
 import 'stopwatch_page.dart';
 
 // --- MAIN APP INITIALIZATION ---
 void main() {
-  runApp(const StopwatchApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => SettingsProvider(),
+      child: const StopwatchApp(),
+    ),
+  );
 }
 
 // --- THEME DEFINITIONS ---
@@ -39,11 +46,16 @@ class StopwatchApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: _lightTheme,
-      darkTheme: _darkTheme,
-      home: const StopwatchPage(),
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: _lightTheme,
+          darkTheme: _darkTheme,
+          themeMode: settings.themeMode,
+          home: const StopwatchPage(),
+        );
+      },
     );
   }
 }

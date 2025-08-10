@@ -2,13 +2,13 @@ import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-// Custom Painter for the OVAL track animation
-class TrackPainter extends CustomPainter {
+// ## RENAMED to RelyRoundPainter ##
+class RelyRoundPainter extends CustomPainter {
   final double progress;
   final Color color;
   final Color backgroundColor;
 
-  TrackPainter({
+  RelyRoundPainter({
     required this.progress,
     required this.color,
     required this.backgroundColor,
@@ -53,11 +53,10 @@ class TrackPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant TrackPainter oldDelegate) =>
+  bool shouldRepaint(covariant RelyRoundPainter oldDelegate) =>
       oldDelegate.progress != progress;
 }
 
-// Pulsing Scroll Arrow Indicator
 class ScrollIndicator extends StatefulWidget {
   final IconData icon;
   final Color color;
@@ -95,7 +94,6 @@ class _ScrollIndicatorState extends State<ScrollIndicator>
   }
 }
 
-// Animated Particle Overlay
 class MovingParticles extends StatefulWidget {
   final Color baseColor;
   const MovingParticles({super.key, required this.baseColor});
@@ -160,7 +158,6 @@ class _ParticlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
-
     for (var particle in particles) {
       paint.color = baseColor.withOpacity(particle.opacity);
       canvas.drawCircle(particle.position, particle.radius, paint);
@@ -193,7 +190,6 @@ class _Particle {
     } else {
       position = Offset(-5, random.nextDouble() * bounds.height);
     }
-
     velocity = Offset(
       (random.nextDouble() - 0.5) * 1.2,
       (random.nextDouble() - 0.5) * 1.2,

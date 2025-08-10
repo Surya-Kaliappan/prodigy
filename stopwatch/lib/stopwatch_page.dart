@@ -2,22 +2,11 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'settings_page.dart';
+import 'settings_provider.dart';
 import 'widgets.dart';
 
-const List<Color> _energyColorsLight = [
-  Color(0xFF007BFF),
-  Color(0xFFFF8F00),
-  Color(0xFF28A745),
-  Color(0xFF6F42C1),
-];
-const List<Color> _energyColorsDark = [
-  Color(0xFF4DD0E1),
-  Color(0xFFFFD54F),
-  Color(0xFFA5D6A7),
-  Color(0xFFCE93D8),
-];
-
-// --- STOPWATCH PAGE WIDGET ---
 class StopwatchPage extends StatefulWidget {
   const StopwatchPage({super.key});
 
@@ -25,7 +14,6 @@ class StopwatchPage extends StatefulWidget {
   State<StopwatchPage> createState() => _StopwatchPageState();
 }
 
-// --- STOPWATCH PAGE STATE & LOGIC ---
 class _StopwatchPageState extends State<StopwatchPage>
     with TickerProviderStateMixin {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -38,6 +26,8 @@ class _StopwatchPageState extends State<StopwatchPage>
 
   Duration _lastLapTime = Duration.zero;
   String _splitTime = '00:00:00';
+  double _currentProgress = 0.0;
+  bool _isResetting = false;
 
   late final AnimationController _gradientController;
 
@@ -46,7 +36,6 @@ class _StopwatchPageState extends State<StopwatchPage>
   bool _showDownArrow = false;
 
   List<Color> _energyColors = [];
-  bool _isResetting = false;
 
   @override
   void initState() {
@@ -69,10 +58,12 @@ class _StopwatchPageState extends State<StopwatchPage>
   }
 
   void _randomizeColors() {
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    _energyColors = isDarkMode
-        ? (List.from(_energyColorsDark)..shuffle())
-        : (List.from(_energyColorsLight)..shuffle());
+    final colorList = isDarkMode
+        ? settings.darkEnergyColors
+        : settings.lightEnergyColors;
+    _energyColors = List.from(colorList)..shuffle();
   }
 
   void _selectNextRandomColor(int currentMinute) {
@@ -89,7 +80,6 @@ class _StopwatchPageState extends State<StopwatchPage>
     bool canScrollDown =
         _scrollController.position.pixels <
         _scrollController.position.maxScrollExtent;
-
     if (canScrollUp != _showUpArrow || canScrollDown != _showDownArrow) {
       setState(() {
         _showUpArrow = canScrollUp;
@@ -149,6 +139,7 @@ class _StopwatchPageState extends State<StopwatchPage>
     }
     _formattedTime = _formatDuration(elapsed);
     _splitTime = _formatDuration(elapsed - _lastLapTime);
+    _currentProgress = (_stopwatch.elapsedMilliseconds % 60000) / 60000;
   }
 
   void _addLap() {
@@ -171,14 +162,11 @@ class _StopwatchPageState extends State<StopwatchPage>
   void _reset() {
     if (!mounted) return;
     if (_isRunning) {
-      setState(() {
-        _timer?.cancel();
-        _isRunning = false;
-      });
+      _stopwatch.stop();
+      _timer?.cancel();
     }
-
-    // Trigger the reset animation
     setState(() {
+      _isRunning = false;
       _isResetting = true;
     });
   }
@@ -194,12 +182,18 @@ class _StopwatchPageState extends State<StopwatchPage>
 
   @override
   Widget build(BuildContext context) {
+    final settings = Provider.of<SettingsProvider>(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isDarkMode = theme.brightness == Brightness.dark;
 
     if (_energyColors.isEmpty) _randomizeColors();
-    final currentEnergyColor =
-        _energyColors[_currentCycleIndex % _energyColors.length];
+
+    final currentEnergyColor = settings.useDynamicColors
+        ? _energyColors[_currentCycleIndex % _energyColors.length]
+        : (isDarkMode
+              ? settings.darkEnergyColors[settings.staticColorIndex]
+              : settings.lightEnergyColors[settings.staticColorIndex]);
 
     final restingColor = colorScheme.surface;
     final runningColor = currentEnergyColor;
@@ -213,9 +207,6 @@ class _StopwatchPageState extends State<StopwatchPage>
       parent: _gradientController,
       curve: Curves.easeInOut,
     );
-
-    final double currentProgress =
-        (_stopwatch.elapsedMilliseconds % 60000) / 60000;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -243,9 +234,8 @@ class _StopwatchPageState extends State<StopwatchPage>
               );
             },
           ),
-
-          if (_isRunning) MovingParticles(baseColor: currentEnergyColor),
-
+          if (_isRunning && settings.showParticles)
+            MovingParticles(baseColor: currentEnergyColor),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -253,151 +243,151 @@ class _StopwatchPageState extends State<StopwatchPage>
                 children: [
                   Expanded(
                     flex: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 1.8,
-                            child: TweenAnimationBuilder<double>(
-                              tween: Tween(
-                                end: _isResetting ? 0.0 : currentProgress,
-                              ),
-                              duration: _isResetting
-                                  ? const Duration(milliseconds: 400)
-                                  : Duration.zero,
-                              curve: Curves.easeOut,
-                              builder: (context, progress, child) {
-                                return CustomPaint(
-                                  painter: TrackPainter(
-                                    progress: progress,
-                                    color: currentEnergyColor,
-                                    backgroundColor: colorScheme.surfaceVariant
-                                        .withOpacity(0.3),
-                                  ),
-                                );
-                              },
-                              onEnd: () {
-                                if (_isResetting) {
-                                  setState(() {
-                                    _stopwatch.reset();
-                                    _formattedTime = '00:00:00';
-                                    _splitTime = '00:00:00';
-                                    _lastLapTime = Duration.zero;
-                                    _currentCycleIndex = 0;
-                                    _randomizeColors();
-                                    _isResetting = false;
-
-                                    // ## FIX: Correctly clear the AnimatedList ##
-                                    final lapCount = _laps.length;
-                                    for (var i = 0; i < lapCount; i++) {
-                                      // The builder provides a temporary widget for the removal animation.
-                                      _listKey.currentState?.removeItem(
-                                        0,
-                                        (context, animation) => FadeTransition(
-                                          opacity: animation,
-                                          child: _buildLapItem(i, colorScheme),
-                                        ),
-                                        duration: const Duration(
-                                          milliseconds: 100,
-                                        ),
-                                      );
-                                    }
-                                    _laps.clear();
-                                    _updateScrollIndicator();
-                                  });
-                                }
-                              },
-                            ),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 320,
+                          minHeight: 152,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Stack(
+                            alignment: Alignment.center,
                             children: [
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 40.0,
+                              AspectRatio(
+                                aspectRatio: 2.1,
+                                // ## FIX: This is the new, robust animation logic ##
+                                child: TweenAnimationBuilder<double>(
+                                  key: ValueKey(_isResetting),
+                                  tween: Tween(
+                                    begin: _currentProgress,
+                                    end: _isResetting ? 0.0 : _currentProgress,
                                   ),
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      style: TextStyle(
-                                        fontFamily: 'monospace',
-                                        color: _isRunning
-                                            ? currentEnergyColor
-                                            : colorScheme.onSurface,
+                                  duration: _isResetting
+                                      ? const Duration(milliseconds: 500)
+                                      : Duration.zero,
+                                  curve: Curves.easeOut,
+                                  builder: (context, progress, child) {
+                                    return CustomPaint(
+                                      painter: RelyRoundPainter(
+                                        progress: progress,
+                                        color: currentEnergyColor,
+                                        backgroundColor: colorScheme
+                                            .surfaceVariant
+                                            .withOpacity(0.3),
                                       ),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: _formattedTime.substring(
-                                            0,
-                                            _formattedTime.length - 3,
-                                          ),
-                                          style: const TextStyle(
-                                            fontSize: 80,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: -2,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: _formattedTime.substring(
-                                            _formattedTime.length - 3,
-                                          ),
-                                          style: TextStyle(
-                                            fontSize: 40,
-                                            color:
-                                                (_isRunning
-                                                        ? currentEnergyColor
-                                                        : colorScheme.onSurface)
-                                                    .withOpacity(0.7),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                    );
+                                  },
+                                  onEnd: () {
+                                    // This block now ONLY runs after the reset animation is complete
+                                    if (_isResetting) {
+                                      setState(() {
+                                        _stopwatch.reset();
+                                        _formattedTime = '00:00:00';
+                                        _splitTime = '00:00:00';
+                                        _lastLapTime = Duration.zero;
+                                        _currentCycleIndex = 0;
+                                        _currentProgress = 0.0;
+                                        _randomizeColors();
+                                        _isResetting = false;
+
+                                        final lapCount = _laps.length;
+                                        if (lapCount > 0) {
+                                          _laps.clear();
+                                          for (var i = 0; i < lapCount; i++) {
+                                            _listKey.currentState?.removeItem(
+                                              0,
+                                              (context, animation) =>
+                                                  const SizedBox.shrink(),
+                                              duration: Duration.zero,
+                                            );
+                                          }
+                                          _updateScrollIndicator();
+                                        }
+                                      });
+                                    }
+                                  },
                                 ),
                               ),
-                              if (_laps.isNotEmpty || _isRunning)
-                                Text(
-                                  _splitTime,
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontFamily: 'monospace',
-                                    color: _isRunning
-                                        ? currentEnergyColor.withOpacity(0.8)
-                                        : colorScheme.onSurface.withOpacity(
-                                            0.6,
-                                          ),
-                                  ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0,
                                 ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            fontFamily: 'monospace',
+                                            color: _isRunning
+                                                ? currentEnergyColor
+                                                : colorScheme.onSurface,
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: _formattedTime.substring(
+                                                0,
+                                                _formattedTime.length - 3,
+                                              ),
+                                              style: const TextStyle(
+                                                fontSize: 80,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: -2,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: _formattedTime.substring(
+                                                _formattedTime.length - 3,
+                                              ),
+                                              style: TextStyle(
+                                                fontSize: 40,
+                                                color:
+                                                    (_isRunning
+                                                            ? currentEnergyColor
+                                                            : colorScheme
+                                                                  .onSurface)
+                                                        .withOpacity(0.7),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    if (_laps.isNotEmpty || _isRunning)
+                                      Text(
+                                        _splitTime,
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontFamily: 'monospace',
+                                          color: _isRunning
+                                              ? currentEnergyColor.withOpacity(
+                                                  0.8,
+                                                )
+                                              : colorScheme.onSurface
+                                                    .withOpacity(0.6),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
                             ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 28,
-                        child: AnimatedOpacity(
-                          opacity: _showUpArrow ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 300),
-                          child: ScrollIndicator(
-                            icon: Icons.keyboard_arrow_up,
-                            color: colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 5 * 58.0,
-                        child: AnimatedList(
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Stack(
+                      children: [
+                        AnimatedList(
                           controller: _scrollController,
                           key: _listKey,
                           initialItemCount: _laps.length,
@@ -412,30 +402,66 @@ class _StopwatchPageState extends State<StopwatchPage>
                                   parent: animation,
                                   curve: Curves.easeOut,
                                 ),
-                                child: _buildLapItem(index, colorScheme),
+                                child: _buildLapItem(
+                                  index,
+                                  colorScheme,
+                                  currentEnergyColor,
+                                ),
                               ),
                             );
                           },
                         ),
-                      ),
-                      SizedBox(
-                        height: 28,
-                        child: AnimatedOpacity(
-                          opacity: _showDownArrow ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 300),
-                          child: ScrollIndicator(
-                            icon: Icons.keyboard_arrow_down,
-                            color: colorScheme.onSurface.withOpacity(0.5),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: AnimatedOpacity(
+                            opacity: _showUpArrow ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: ScrollIndicator(
+                              icon: Icons.keyboard_arrow_up,
+                              color: colorScheme.onSurface.withOpacity(0.5),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: AnimatedOpacity(
+                            opacity: _showDownArrow ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: ScrollIndicator(
+                              icon: Icons.keyboard_arrow_down,
+                              color: colorScheme.onSurface.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  const Spacer(flex: 1),
-
+                  const SizedBox(height: 16),
                   _buildControls(colorScheme, currentEnergyColor),
                 ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 0,
+            child: SafeArea(
+              child: IconButton(
+                icon: Icon(
+                  Icons.settings_outlined,
+                  color: colorScheme.onSurface.withOpacity(0.7),
+                ),
+                onPressed: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
+                  setState(() {
+                    _randomizeColors();
+                  });
+                },
               ),
             ),
           ),
@@ -444,7 +470,7 @@ class _StopwatchPageState extends State<StopwatchPage>
     );
   }
 
-  Widget _buildLapItem(int index, ColorScheme colorScheme) {
+  Widget _buildLapItem(int index, ColorScheme colorScheme, Color energyColor) {
     final isDarkMode = colorScheme.brightness == Brightness.dark;
     final lapData = _laps.length > index ? _laps[index] : null;
     if (lapData == null) return const SizedBox.shrink();
@@ -484,7 +510,7 @@ class _StopwatchPageState extends State<StopwatchPage>
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'monospace',
-                    color: colorScheme.onSurface.withOpacity(0.5),
+                    color: energyColor.withOpacity(0.9),
                   ),
                 ),
                 const Spacer(),
@@ -506,7 +532,10 @@ class _StopwatchPageState extends State<StopwatchPage>
   }
 
   Widget _buildControls(ColorScheme colorScheme, Color energyColor) {
-    final bool isPaused = !_isRunning && _stopwatch.elapsedMilliseconds > 0;
+    // ## FIX: Corrected button logic ##
+    // The `isPaused` check now includes the `_isResetting` flag.
+    final bool isPaused =
+        !_isRunning && _stopwatch.elapsedMilliseconds > 0 && !_isResetting;
     final String startButtonLabel = isPaused ? 'Resume' : 'Start';
 
     return Padding(
