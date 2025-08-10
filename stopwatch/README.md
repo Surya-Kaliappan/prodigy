@@ -1,6 +1,6 @@
 # Stopwatch Application - A Flutter Project
 
-This project is a modern, highly animated, and fully-featured stopwatch application built with Flutter. It's designed to be a visually engaging and user-centric tool for timekeeping, featuring a dynamic UI that is both beautiful and functional. The application supports both light and dark modes and includes a comprehensive settings panel for user customization.
+This is a modern, highly animated, and cross-platform stopwatch application built with Flutter. It was developed as the third task (Task 3) during my Developer Internship at **Prodigy InfoTech**. The app provides a dynamic, user interface and performs standard stopwatch functions, including lap and split timing, with a focus on a professional and visually engaging user experience.
 
 ## 📸 Screenshots
 
