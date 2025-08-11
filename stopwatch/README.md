@@ -80,9 +80,9 @@ To get a local copy up and running, follow these simple steps.
     ```sh
     git clone [https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch)
     ```
-2.  **cd stopwatch**
+2.  **Navigate to the project directory**
     ```sh
-    cd your-project-folder-name
+    cd stopwatch
     ```
 3.  **Install packages**
     ```sh
