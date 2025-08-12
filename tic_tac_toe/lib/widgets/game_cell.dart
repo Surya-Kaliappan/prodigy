@@ -48,16 +48,10 @@ class GameCell extends StatelessWidget {
   Widget _buildSymbol() {
     if (symbol == 'X') {
       // FIX: Provide the required 'color' parameter
-      return CustomPaint(
-        painter: GlowingXPainter(color: Colors.red),
-        size: const Size(60, 60),
-      );
+      return CustomPaint(painter: GlowingXPainter(), size: const Size(60, 60));
     } else if (symbol == 'O') {
       // FIX: Provide the required 'color' parameter
-      return CustomPaint(
-        painter: GlowingOPainter(color: Colors.lightBlueAccent),
-        size: const Size(60, 60),
-      );
+      return CustomPaint(painter: GlowingOPainter(), size: const Size(60, 60));
     }
     return Container();
   }

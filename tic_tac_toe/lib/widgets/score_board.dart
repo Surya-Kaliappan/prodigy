@@ -23,29 +23,22 @@ class ScoreBoard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120, // Give the scoreboard a fixed height
-      child: Stack(
-        alignment: Alignment.center,
+      height: 120,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // This vertically aligns all children
         children: [
-          // Layer 1: The Player Pillars (stable background)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildScorePillar(
-                context,
-                'O',
-                scoreO,
-                !isPlayerXTurn || isGameOver,
-              ),
-              _buildScorePillar(
-                context,
-                'X',
-                scoreX,
-                isPlayerXTurn || isGameOver,
-              ),
-            ],
+          Expanded(
+            child: _buildScorePillar(
+              context,
+              'O',
+              scoreO,
+              !isPlayerXTurn || isGameOver,
+            ),
           ),
-          // Layer 2: The Arrow (appears on top without affecting layout)
+
+          // The arrow is now a direct child of the Row for perfect alignment
           AnimatedOpacity(
             opacity: showArrow ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
@@ -56,6 +49,15 @@ class ScoreBoard extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSurface,
                 size: 32,
               ),
+            ),
+          ),
+
+          Expanded(
+            child: _buildScorePillar(
+              context,
+              'X',
+              scoreX,
+              isPlayerXTurn || isGameOver,
             ),
           ),
         ],
@@ -69,30 +71,29 @@ class ScoreBoard extends StatelessWidget {
     int score,
     bool shouldGlow,
   ) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = player == 'X' ? Colors.red : Colors.lightBlueAccent;
-    final inactiveColor = isDarkMode
-        ? Colors.grey.shade800
-        : Colors.grey.shade500;
-    final symbolSize = MediaQuery.of(context).size.width > 650 ? 60.0 : 45.0;
-
+    // We revert to calling the simpler painter constructors
     final painter = player == 'X'
-        ? GlowingXPainter(color: shouldGlow ? activeColor : inactiveColor)
-        : GlowingOPainter(color: shouldGlow ? activeColor : inactiveColor);
+        ? const GlowingXPainter()
+        : const GlowingOPainter();
+    final symbolSize = MediaQuery.of(context).size.width > 650
+        ? 80.0
+        : 60.0; // Larger symbols
 
-    return SizedBox(
-      // Use a fixed width to ensure both pillars are the same size
-      width: 120,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        AnimatedOpacity(
+          opacity: shouldGlow ? 1.0 : 0.4,
+          duration: const Duration(milliseconds: 400),
+          child: SizedBox(
             width: symbolSize,
             height: symbolSize,
             child: CustomPaint(painter: painter),
           ),
-          const SizedBox(height: 10),
-          Visibility(
+        ),
+        SizedBox(
+          height: 40,
+          child: Visibility(
             visible: isGameOver,
             maintainSize: true,
             maintainAnimation: true,
@@ -107,8 +108,8 @@ class ScoreBoard extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

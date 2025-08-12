@@ -15,6 +15,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
+  // All state and logic methods are unchanged from the complete version
   bool isGameStarted = false;
   bool isSpinning = false;
   bool showArrow = false;
@@ -54,10 +55,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       isSpinning = true;
       showArrow = true;
     });
-
     _arrowAnimationController.duration = const Duration(milliseconds: 1500);
     _arrowAnimationController.repeat();
-
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
       _arrowAnimationController.stop();
@@ -184,7 +183,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         label: const Text("Start Game"),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-          textStyle: const TextStyle(fontSize: 24),
+          // Increased font size
+          textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
@@ -268,34 +268,28 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildSmartButton() {
-    // If the arrow is spinning, show an empty space
     if (isSpinning) return const SizedBox(height: 50);
+
+    final buttonStyle = ElevatedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      // Increased font size
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+    );
 
     return Visibility(
       visible: isGameOver,
-      // If the game is ongoing, show the Reset button
       replacement: ElevatedButton.icon(
-        onPressed: _startNewGame, // Resetting the game now triggers the spin
+        onPressed: _startNewGame,
         icon: const Icon(Icons.refresh),
         label: const Text('Reset Game'),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
+        style: buttonStyle,
       ),
-      // If the game is over, show the Play Again button
       child: ElevatedButton.icon(
         onPressed: _startNewGame,
         icon: const Icon(Icons.casino),
         label: const Text('Play Again'),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
+        style: buttonStyle,
       ),
     );
   }
