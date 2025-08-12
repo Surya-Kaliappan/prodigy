@@ -50,10 +50,9 @@ The project is organized into a clean and modular structure for better maintaina
 ---
 ## 📂 File Structure
 
-=======
 stopwatch_app/  
 ├── lib/  
-│   ├── main.dart             # Main entry point, theme definitions, and provider setup. 
+│   ├── main.dart             # Main entry point, theme definitions, and provider setup.  
 │   ├── stopwatch_page.dart   # The main screen, containing all stopwatch logic and UI.  
 │   ├── settings_page.dart    # The UI for the user settings screen.  
 │   ├── settings_provider.dart# Manages the state and persistence of user settings.  
@@ -79,11 +78,11 @@ To get a local copy up and running, follow these simple steps.
 
 1.  **Clone the repo**
     ```sh
-    git clone [https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch](https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch)
+    git clone https://github.com/Surya-Kaliappan/prodigy/tree/main/stopwatch
     ```
 2.  **Navigate to the project directory**
     ```sh
-    cd your-project-folder-name
+    cd stopwatch
     ```
 3.  **Install packages**
     ```sh

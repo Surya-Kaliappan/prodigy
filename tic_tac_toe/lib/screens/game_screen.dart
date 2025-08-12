@@ -6,7 +6,6 @@ import 'package:confetti/confetti.dart';
 import 'package:tic_tac_toe/models/settings_provider.dart';
 import 'package:tic_tac_toe/screens/settings_screen.dart';
 import 'package:tic_tac_toe/widgets/game_board.dart';
-import 'package:tic_tac_toe/widgets/pulsing_button.dart'; // Import the new button
 import 'package:tic_tac_toe/widgets/score_board.dart';
 
 class GameScreen extends StatefulWidget {
@@ -16,7 +15,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
-  // All state variables and logic methods remain the same
   bool isGameStarted = false;
   bool isSpinning = false;
   bool showArrow = false;
@@ -56,8 +54,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       isSpinning = true;
       showArrow = true;
     });
+
     _arrowAnimationController.duration = const Duration(milliseconds: 1500);
     _arrowAnimationController.repeat();
+
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
       _arrowAnimationController.stop();
@@ -175,12 +175,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   Widget _buildStartGameButton() {
     return Center(
-      child: PulsingIconButton(
+      child: ElevatedButton.icon(
         onPressed: () {
           setState(() => isGameStarted = true);
           _startNewGame();
         },
-        icon: Icons.play_arrow_rounded,
+        icon: const Icon(Icons.play_arrow_rounded),
+        label: const Text("Start Game"),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
+          textStyle: const TextStyle(fontSize: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
       ),
     );
   }
@@ -260,11 +268,35 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildSmartButton() {
-    if (isSpinning) return const SizedBox(height: 84);
+    // If the arrow is spinning, show an empty space
+    if (isSpinning) return const SizedBox(height: 50);
+
     return Visibility(
       visible: isGameOver,
-      replacement: const SizedBox(height: 84),
-      child: PulsingIconButton(onPressed: _startNewGame, icon: Icons.casino),
+      // If the game is ongoing, show the Reset button
+      replacement: ElevatedButton.icon(
+        onPressed: _startNewGame, // Resetting the game now triggers the spin
+        icon: const Icon(Icons.refresh),
+        label: const Text('Reset Game'),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      ),
+      // If the game is over, show the Play Again button
+      child: ElevatedButton.icon(
+        onPressed: _startNewGame,
+        icon: const Icon(Icons.casino),
+        label: const Text('Play Again'),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      ),
     );
   }
 }

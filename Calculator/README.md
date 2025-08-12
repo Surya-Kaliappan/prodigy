@@ -50,24 +50,18 @@ Before you begin, ensure you have the Flutter SDK installed and configured.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/Surya-Kaliappan/prodigy.git](https://github.com/Surya-Kaliappan/prodigy.git)
+    git clone [https://github.com/Surya-Kaliappan/prodigy/tree/main/Calculator](https://github.com/Surya-Kaliappan/prodigy/tree/main/Calculator)
     ```
 
 2.  **Navigate to the project directory:**
     ```bash
-    cd prodigy
+    cd Calculator
     ```
 
 3.  **Install dependencies:**
     Fetch all the required Dart and Flutter packages:
     ```bash
     flutter pub get
-    ```
-
-4.  **Generate app icons:**
-    Ensure your custom icon is located at `assets/icon/app_icon.png` (as configured in `pubspec.yaml`). Then, run:
-    ```bash
-    flutter pub run flutter_launcher_icons:main
     ```
 
 ### Running the App
