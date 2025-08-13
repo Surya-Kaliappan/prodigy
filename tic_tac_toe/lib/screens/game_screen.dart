@@ -15,7 +15,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
-  // All state and logic methods are unchanged from the complete version
+  // All state variables and logic methods remain the same
   bool isGameStarted = false;
   bool isSpinning = false;
   bool showArrow = false;
@@ -147,7 +147,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           isGameStarted
               ? LayoutBuilder(
                   builder: (context, constraints) {
-                    if (constraints.maxWidth > 650) {
+                    if (constraints.maxWidth > 700) {
                       return _buildWideLayout(settings);
                     } else {
                       return _buildNarrowLayout(settings);
@@ -183,7 +183,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         label: const Text("Start Game"),
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-          // Increased font size
           textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
@@ -217,37 +216,43 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildWideLayout(SettingsProvider settings) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildAnimatedScoreBoard(),
-              const SizedBox(height: 40),
-              _buildSmartButton(),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 500 * settings.boardSizeFactor,
-                maxHeight: 500 * settings.boardSizeFactor,
-              ),
-              child: GameBoard(
-                board: board,
-                onCellTap: _handleCellTap,
-                cellGlowColor: settings.cellGlowColor,
-                winningLine: winningLine,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1000),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildAnimatedScoreBoard(),
+                  const SizedBox(height: 80),
+                  _buildSmartButton(),
+                ],
               ),
             ),
-          ),
+            const SizedBox(width: 40),
+            Expanded(
+              flex: 5,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: 500 * settings.boardSizeFactor,
+                    maxHeight: 500 * settings.boardSizeFactor,
+                  ),
+                  child: GameBoard(
+                    board: board,
+                    onCellTap: _handleCellTap,
+                    cellGlowColor: settings.cellGlowColor,
+                    winningLine: winningLine,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -272,7 +277,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
     final buttonStyle = ElevatedButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      // Increased font size
       textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
     );
@@ -287,7 +291,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       ),
       child: ElevatedButton.icon(
         onPressed: _startNewGame,
-        icon: const Icon(Icons.casino),
+        // FIX: Changed the icon to be more appropriate
+        icon: const Icon(Icons.replay),
         label: const Text('Play Again'),
         style: buttonStyle,
       ),

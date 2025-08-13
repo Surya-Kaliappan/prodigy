@@ -22,46 +22,46 @@ class ScoreBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment:
-            CrossAxisAlignment.center, // This vertically aligns all children
-        children: [
-          Expanded(
-            child: _buildScorePillar(
-              context,
-              'O',
-              scoreO,
-              !isPlayerXTurn || isGameOver,
-            ),
+    // This simple Row is now the entire layout.
+    // CrossAxisAlignment.center is the key to perfect vertical alignment.
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Player O Pillar
+        Expanded(
+          child: _buildScorePillar(
+            context,
+            'O',
+            scoreO,
+            !isPlayerXTurn || isGameOver,
           ),
+        ),
 
-          // The arrow is now a direct child of the Row for perfect alignment
-          AnimatedOpacity(
-            opacity: showArrow ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: RotationTransition(
-              turns: arrowAnimation,
-              child: Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 32,
-              ),
+        // The Arrow
+        AnimatedOpacity(
+          opacity: showArrow ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: RotationTransition(
+            turns: arrowAnimation,
+            child: Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Theme.of(context).colorScheme.onSurface,
+              size: 32,
             ),
           ),
+        ),
 
-          Expanded(
-            child: _buildScorePillar(
-              context,
-              'X',
-              scoreX,
-              isPlayerXTurn || isGameOver,
-            ),
+        // Player X Pillar
+        Expanded(
+          child: _buildScorePillar(
+            context,
+            'X',
+            scoreX,
+            isPlayerXTurn || isGameOver,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -71,13 +71,10 @@ class ScoreBoard extends StatelessWidget {
     int score,
     bool shouldGlow,
   ) {
-    // We revert to calling the simpler painter constructors
     final painter = player == 'X'
         ? const GlowingXPainter()
         : const GlowingOPainter();
-    final symbolSize = MediaQuery.of(context).size.width > 650
-        ? 80.0
-        : 60.0; // Larger symbols
+    final symbolSize = MediaQuery.of(context).size.width > 650 ? 80.0 : 60.0;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -91,21 +88,18 @@ class ScoreBoard extends StatelessWidget {
             child: CustomPaint(painter: painter),
           ),
         ),
-        SizedBox(
-          height: 40,
-          child: Visibility(
-            visible: isGameOver,
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            child: Text(
-              score.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
+        const SizedBox(height: 10),
+        // Using AnimatedOpacity instead of Visibility is better for layout stability
+        AnimatedOpacity(
+          opacity: isGameOver ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: Text(
+            score.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

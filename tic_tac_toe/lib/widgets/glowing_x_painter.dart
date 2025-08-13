@@ -9,7 +9,7 @@ class GlowingXPainter extends CustomPainter {
       ..color = Colors.red
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 8; // Bolder lines
+      ..strokeWidth = 8;
     final glowPaint = Paint()
       ..color = Colors.red.withOpacity(0.8)
       ..style = PaintingStyle.stroke
@@ -19,11 +19,12 @@ class GlowingXPainter extends CustomPainter {
 
     final path = Path();
     final center = size.width / 2;
-    // Increased size from 15 to 22 for a larger symbol
-    path.moveTo(center - 22, center - 22);
-    path.lineTo(center + 22, center + 22);
-    path.moveTo(center + 22, center - 22);
-    path.lineTo(center - 22, center + 22);
+    // Adjusted size to match the new 'O' size
+    final offset = size.width / 2.5;
+    path.moveTo(center - offset, center - offset);
+    path.lineTo(center + offset, center + offset);
+    path.moveTo(center + offset, center - offset);
+    path.lineTo(center - offset, center + offset);
 
     canvas.drawPath(path, glowPaint);
     canvas.drawPath(path, paint);
