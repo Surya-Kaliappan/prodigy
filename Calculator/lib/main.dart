@@ -172,11 +172,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         case '÷':
         case '%':
           // Handle the starting symbole of number
-          if (_inputExpression.isEmpty &&
-              (buttonText == '%' || buttonText == 'x' || buttonText == '÷')) {
+          if (_inputExpression.isEmpty) {
+            if (!(buttonText == '%' ||
+                buttonText == 'x' ||
+                buttonText == '÷')) {
+              // } else {
+              _handleNumberInput(buttonText);
+            }
             break;
-          } else {
-            _handleNumberInput(buttonText);
           }
 
           // Operator replacement logic
@@ -231,7 +234,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           children: <Widget>[
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
                 alignment: Alignment.bottomRight,
                 // child: SingleChildScrollView(
                 //   scrollDirection:
@@ -250,22 +256,29 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 //     ),
                 //   ),
                 // ),
-                child: AutoSizeText(
-                  _output,
-                  style: TextStyle(
-                    color: dynamicTextColor,
-                    fontSize: 72.0, // This is the max font size
-                    fontWeight: FontWeight.w300,
+                child: MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    // This forces a text scale factor of 1.0, ignoring system settings.
+                    textScaler: TextScaler.linear(1.0),
                   ),
-                  maxLines: 5, // Only allow up to 2 lines
-                  minFontSize: 24.0, // The smallest the font can get
-                  textAlign:
-                      TextAlign.end, // Align text to the end (right side)
+                  child: AutoSizeText(
+                    _output,
+                    style: TextStyle(
+                      color: dynamicTextColor,
+                      fontSize: 55.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    // This ensures the text stays on a single line.
+                    maxLines: 1,
+                    minFontSize: 28.0,
+                    textAlign: TextAlign.end,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),
 
-            const Divider(height: 1.0, color: Colors.grey),
+            const Divider(height: 20.0, color: Colors.grey),
 
             Row(
               children: <Widget>[
@@ -409,20 +422,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             Row(
               children: <Widget>[
                 Expanded(
-                  flex: 1,
-                  child: CalculatorButton(
-                    text: '.',
-                    backgroundColor: Colors.grey.shade900,
-                    // onPressed: _useDot ? () => _onButtonPressed('.') : () {},
-                    onPressed: () => _onButtonPressed('.'),
-                  ),
-                ),
-                Expanded(
                   flex: 2,
                   child: CalculatorButton(
                     text: '0',
                     backgroundColor: Colors.grey.shade900,
+                    // onPressed: _useDot ? () => _onButtonPressed('.') : () {},
                     onPressed: () => _onButtonPressed('0'),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: CalculatorButton(
+                    text: '.',
+                    backgroundColor: Colors.grey.shade900,
+                    onPressed: () => _onButtonPressed('.'),
                   ),
                 ),
                 Expanded(
@@ -454,7 +467,7 @@ class CalculatorButton extends StatelessWidget {
     required this.text,
     this.backgroundColor,
     this.textColor = Colors.white,
-    this.fontSize = 28.0,
+    this.fontSize = 32.0,
     required this.onPressed,
   });
 
@@ -468,7 +481,7 @@ class CalculatorButton extends StatelessWidget {
               : Colors.grey.withOpacity(1));
     return Container(
       margin: const EdgeInsets.all(4.0),
-      height: 70.0,
+      height: 85.0,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -491,7 +504,7 @@ class CalculatorButton extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w400),
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
             ),
           ),
         ),
