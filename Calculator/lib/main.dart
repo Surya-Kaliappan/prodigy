@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 void main() {
   runApp(const CalculatorApp());
@@ -52,6 +51,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   // --- State Variables ---
   String _inputExpression = "";
   String _output = "0";
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   // --- Helper to clear all state ---
   void _clearAll() {
@@ -202,6 +208,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (_output != "Error") {
         _output = _inputExpression.isEmpty ? "0" : _inputExpression;
       }
+
+      // --- Add this block to auto-scroll ---
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
   }
 
@@ -240,45 +257,27 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           children: <Widget>[
             Expanded(
               child: Container(
+                alignment: Alignment.bottomRight,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
                   vertical: 8.0,
                 ),
-                alignment: Alignment.bottomRight,
-                // child: SingleChildScrollView(
-                //   scrollDirection:
-                //       Axis.horizontal, // Enables horizontal scrolling
-                //   reverse:
-                //       true, // Scrolls from right to left (like a calculator)
-                //   child: FittedBox(
-                //     fit: BoxFit.fitWidth, // Scales the text to fit the width
-                //     child: Text(
-                //       _output,
-                //       style: const TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 72.0, // This is the initial font size
-                //         fontWeight: FontWeight.w300,
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 child: MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    // This forces a text scale factor of 1.0, ignoring system settings.
-                    textScaler: TextScaler.linear(1.0),
-                  ),
-                  child: AutoSizeText(
-                    _output,
-                    style: TextStyle(
-                      color: dynamicTextColor,
-                      fontSize: 50.0,
-                      fontWeight: FontWeight.w400,
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaler: TextScaler.linear(1.0)),
+                  // This makes the display vertically scrollable
+                  child: SingleChildScrollView(
+                    controller: _scrollController, // Attach the controller
+                    child: Text(
+                      _output,
+                      style: TextStyle(
+                        color: dynamicTextColor, // Use your existing variable
+                        fontSize: 48.0, // A clear, fixed font size
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.end, // Align text to the right
                     ),
-                    // This ensures the text stays on a single line.
-                    maxLines: 1,
-                    minFontSize: 28.0,
-                    textAlign: TextAlign.end,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
