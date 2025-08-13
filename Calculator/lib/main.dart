@@ -222,11 +222,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         elevation: 0,
         toolbarHeight: 50.0,
         systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: backgroundColor,
           statusBarIconBrightness:
               Theme.of(context).brightness == Brightness.dark
               ? Brightness.light
               : Brightness.dark,
           // statusBarBrightness: Theme.light.brightness
+          systemNavigationBarColor: backgroundColor,
+          systemNavigationBarIconBrightness:
+              Theme.of(context).brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
         ),
       ),
       body: SafeArea(
@@ -265,8 +271,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     _output,
                     style: TextStyle(
                       color: dynamicTextColor,
-                      fontSize: 55.0,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 50.0,
+                      fontWeight: FontWeight.w400,
                     ),
                     // This ensures the text stays on a single line.
                     maxLines: 1,
@@ -278,7 +284,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
 
-            const Divider(height: 20.0, color: Colors.grey),
+            const Divider(height: 15.0, color: Colors.grey),
 
             Row(
               children: <Widget>[
@@ -481,7 +487,7 @@ class CalculatorButton extends StatelessWidget {
               : Colors.grey.withOpacity(1));
     return Container(
       margin: const EdgeInsets.all(4.0),
-      height: 85.0,
+      height: 70.0,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
