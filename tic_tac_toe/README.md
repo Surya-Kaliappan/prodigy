@@ -9,8 +9,8 @@ Here are some showcases of the application in both light and dark modes, display
 | **Initial** | **Random Start** | **Game 1** |
 | :---: | :---: | :---: |
 | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/atStart.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/randomSelect.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/atWin.jpg" alt="Light Mode" width="300"/> |
-| **Game 2** | **Settings Screen** | 
-| <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/atDraw.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/settings.jpg" alt="Light Mode" width="300"/> | 
+| **Game 2** | **Settings Screen** 
+| <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/atDraw.jpg" alt="Light Mode" width="300"/> | <img src="https://github.com/Surya-Kaliappan/prodigy/blob/main/tic_tac_toe/assets/screenshot/settings.jpg" alt="Light Mode" width="300"/> 
 
 ---
 ## ✨ Features
