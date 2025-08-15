@@ -44,21 +44,21 @@ Here are some showcases of the application in both light and dark modes, display
 The project is organized into a clean and modular structure for better maintainability.
 
 tic_tac_toe/  
-├── lib/  
-│   ├── main.dart                 # Main entry point, theme definitions, and provider setup.  
-│   ├── models/  
-│   │   └── settings_provider.dart# Manages the state and persistence of user settings.  
-│   ├── screens/  
-│   │   ├── game_screen.dart      # The main screen, containing all game logic and UI.  
-│   │   └── settings_screen.dart  # The UI for the user settings screen.  
-│   └── widgets/  
-│       ├── game_board.dart       # The 3x3 game grid widget.  
-│       ├── game_cell.dart        # A single interactive cell widget.  
-│       ├── glowing_o_painter.dart# Custom painter for the 'O' symbol.  
-│       ├── glowing_x_painter.dart# Custom painter for the 'X' symbol.  
-│       └── score_board.dart      # Displays player symbols, scores, and turn indicator.  
-│  
-└── pubspec.yaml                  # Project dependencies and configuration.  
+ │
+ └── lib/  
+      ├── main.dart                 # Main entry point, theme definitions, and provider setup.  
+      ├── models/  
+      │   └── settings_provider.dart# Manages the state and persistence of user settings.  
+      ├── screens/  
+      │   ├── game_screen.dart      # The main screen, containing all game logic and UI.  
+      │   └── settings_screen.dart  # The UI for the user settings screen.  
+      └── widgets/  
+          ├── game_board.dart       # The 3x3 game grid widget.  
+          ├── game_cell.dart        # A single interactive cell widget.  
+          ├── glowing_o_painter.dart# Custom painter for the 'O' symbol.  
+          ├── glowing_x_painter.dart# Custom painter for the 'X' symbol.  
+          └── score_board.dart      # Displays player symbols, scores, and turn indicator.  
+
 
 
 ---
